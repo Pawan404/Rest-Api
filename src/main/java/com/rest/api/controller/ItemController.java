@@ -20,7 +20,9 @@ import com.rest.api.service.ItemService;
 
 @RestController
 public class ItemController {
-
+static {
+	System.out.println("Testing");
+}
 	@Autowired
 	private ItemService itemService;
 
