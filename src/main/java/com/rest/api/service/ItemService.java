@@ -20,4 +20,6 @@ public interface ItemService {
 
 	List<Order> getAllOrders();
 
+	Item findById(Long id);
+
 }

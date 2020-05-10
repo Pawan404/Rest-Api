@@ -20,9 +20,7 @@ import com.rest.api.service.ItemService;
 
 @RestController
 public class ItemController {
-static {
-	System.out.println("Testing");
-}
+
 	@Autowired
 	private ItemService itemService;
 
@@ -36,6 +34,16 @@ static {
 
 		}
 		return new ResponseEntity<List<Item>>(items, HttpStatus.OK);
+	}
+
+	@GetMapping("/get-item/{id}")
+	public Item getItemById(@PathVariable Long id) {
+		Item item = null;
+		if (id != null) {
+			item = itemService.findById(id);
+		}
+		return item;
+
 	}
 
 	@PostMapping("/item")
