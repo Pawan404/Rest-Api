@@ -65,4 +65,27 @@ public class ItemServiceImpl implements ItemService {
 		return itemRepository.getOne(id);
 	}
 
+	@Override
+	public Order updateOrder(Order order) {
+		Order orderData = orderRepository.findById(order.getOrderId()).get();
+		orderData.setDescription(order.getDescription());
+		orderData.setOrderDate(order.getOrderDate());
+		orderData.setStatus(order.getStatus());
+		orderData.setItems(order.getItems());
+		return orderRepository.save(orderData);
+	}
+
+	@Override
+	public void deleteOrder(Long orderId) {
+		
+		orderRepository.deleteById(orderId);
+		
+	}
+
+	@Override
+	public List<Order> bulkOrdering(List<Order> orders) {
+		return orderRepository.saveAll(orders);
+	}
+	
+
 }

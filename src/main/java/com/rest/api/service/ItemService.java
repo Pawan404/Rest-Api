@@ -22,4 +22,10 @@ public interface ItemService {
 
 	Item findById(Long id);
 
+	Order updateOrder(Order order);
+
+	void deleteOrder(Long orderId);
+
+	List<Order> bulkOrdering(List<Order> orders);
+
 }

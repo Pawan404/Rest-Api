@@ -39,10 +39,9 @@ public class Order {
 	
 	private String status;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="cid",referencedColumnName="cid")
-	private Customer customer;
+	private String email;
 	
+		
 	@OneToMany(mappedBy="order")
 	private List<Item> items;
 	
