@@ -99,7 +99,7 @@ public class ItemController {
 
 		Order createdOrder = itemService.createOrder(order);
 
-		return new ResponseEntity<Order>(createdOrder, HttpStatus.OK);
+		return new ResponseEntity<Order>(createdOrder, HttpStatus.CREATED);
 
 	}
 
@@ -148,6 +148,7 @@ public class ItemController {
 		}
 		
 		}catch(Exception e) {
+		logger.info("Orders should not empty");
 		}
 		return new ResponseEntity<List<Order>>(bulkOrdering,HttpStatus.CREATED);
 	}
