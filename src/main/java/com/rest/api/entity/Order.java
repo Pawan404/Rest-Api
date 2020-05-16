@@ -43,10 +43,8 @@ public class Order implements Serializable{
 	private String status;
 	
 	private String email;
-	
 	        
-	@OneToMany(mappedBy="order",cascade=CascadeType.ALL)
-	//@Fetch(FetchMode.JOIN)
+	@OneToMany(mappedBy="order",cascade = CascadeType.ALL)
 	private List<Item> items;
 	
 }

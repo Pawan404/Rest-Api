@@ -41,7 +41,7 @@ public class Item implements Serializable {
 	
 	private String itemDescription;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JoinColumn(name="order_id",referencedColumnName="order_id",insertable=true)
 	private Order order;
 

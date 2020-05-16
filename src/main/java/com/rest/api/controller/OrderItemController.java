@@ -43,6 +43,7 @@ public class OrderItemController {
 		Item item = null;
 		item = itemService.findById(id);
 		if (item == null) {
+			logger.info("");
 			throw new ItemNotFoundException("Invalid Item id : " + id);
 		}
 		return new ResponseEntity<Item>(item, HttpStatus.OK);
