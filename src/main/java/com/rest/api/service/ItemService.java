@@ -26,6 +26,6 @@ public interface ItemService {
 
 	void deleteOrder(Long orderId);
 
-	List<Order> bulkOrdering(List<Order> orders);
+	Order bulkOrdering(Order orders);
 
 }

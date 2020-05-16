@@ -83,8 +83,8 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public List<Order> bulkOrdering(List<Order> orders) {
-		return orderRepository.saveAll(orders);
+	public Order bulkOrdering(Order orders) {
+		return  orderRepository.save(orders);
 	}
 	
 

@@ -1,6 +1,5 @@
 package com.rest.api.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,54 +15,44 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rest.api.CustomErrorType;
 import com.rest.api.entity.Item;
 import com.rest.api.entity.Order;
 import com.rest.api.exception.ItemNotFoundException;
 import com.rest.api.service.ItemService;
 
 @RestController
-public class ItemController {
+public class OrderItemController {
 
-	public static final Logger logger = LoggerFactory.getLogger(ItemController.class);
-	
+	public static final Logger logger = LoggerFactory.getLogger(OrderItemController.class);
+
 	@Autowired
 	private ItemService itemService;
 
 	@GetMapping("/get-items")
 	public ResponseEntity<List<Item>> getAllItems() {
 		List<Item> items = null;
-		try {
-			items = itemService.findAllItems();
-		} catch (Exception e) {
-			throw new ItemNotFoundException();
+		items = itemService.findAllItems();
+		if (items == null)
+			throw new ItemNotFoundException("Item is not found");
 
-		}
 		return new ResponseEntity<List<Item>>(items, HttpStatus.OK);
 	}
 
 	@GetMapping("/get-item/{id}")
-	public Item getItemById(@PathVariable Long id) {
+	public ResponseEntity<Item> getItemById(@PathVariable Long id) {
 		Item item = null;
-		if (id != null) {
-			item = itemService.findById(id);
+		item = itemService.findById(id);
+		if (item == null) {
+			throw new ItemNotFoundException("Invalid Item id : " + id);
 		}
-		return item;
+		return new ResponseEntity<Item>(item, HttpStatus.OK);
 
 	}
 
 	@PostMapping("/item")
 	public ResponseEntity<Item> createItem(@RequestBody Item item) {
-		Item createdItem = null;
-		try {
-			if (item != null) {
-				createdItem = itemService.createItem(item);
-			}
-		} catch (Exception e) {
-
-			throw new ItemNotFoundException();
-		}
-		return new ResponseEntity<Item>(createdItem, HttpStatus.OK);
+		Item createdItem = itemService.createItem(item);
+		return new ResponseEntity<Item>(createdItem, HttpStatus.CREATED);
 
 	}
 
@@ -75,7 +64,7 @@ public class ItemController {
 				createdItem = itemService.updateItem(item);
 			}
 		} catch (Exception e) {
-			throw new ItemNotFoundException();
+			throw new ItemNotFoundException("Item is not available");
 		}
 		return new ResponseEntity<Item>(createdItem, HttpStatus.OK);
 
@@ -88,7 +77,7 @@ public class ItemController {
 				itemService.deleteItem(itemId);
 			}
 		} catch (Exception e) {
-			throw new ItemNotFoundException();
+			throw new ItemNotFoundException(" Item Id is not foune");
 		}
 		return new ResponseEntity<>("Item with ID :" + itemId + " deleted successfully", HttpStatus.OK);
 
@@ -111,8 +100,10 @@ public class ItemController {
 				updateOrder = itemService.updateOrder(order);
 			}
 		} catch (Exception e) {
-			return new ResponseEntity(new CustomErrorType("Unable to upate. Order with id " + order.getOrderId() + " not found."),
-                    HttpStatus.NOT_FOUND);
+			return new ResponseEntity(
+					new com.rest.api.exception.CustomErrorType(
+							"Unable to upate. Order with id " + order.getOrderId() + " not found."),
+					HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Order>(updateOrder, HttpStatus.OK);
 
@@ -125,32 +116,33 @@ public class ItemController {
 		return new ResponseEntity<List<Order>>(orders, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete/{orderId}")
+	@DeleteMapping("/order-delete/{orderId}")
 	public ResponseEntity<String> deleteOrder(@PathVariable Long orderId) {
 		try {
 			if (orderId != null) {
 				itemService.deleteOrder(orderId);
 			}
 		} catch (Exception e) {
-			throw new ItemNotFoundException();
+			throw new ItemNotFoundException("");
 		}
 		return new ResponseEntity<>("Order with ID :" + orderId + " deleted successfully", HttpStatus.OK);
 
 	}
+	
 
 	@PostMapping("/bulk-order")
-	public ResponseEntity<List<Order>> bulkOrdering(@RequestBody List<Order> orders) {
-		List<Order> bulkOrdering=null;
+	public ResponseEntity<Order> bulkOrdering(@RequestBody Order orders) {
+		Order bulkOrdering = null;
 		try {
-		if (orders != null && !orders.isEmpty()) {
+			if (orders != null) {
 
-			bulkOrdering= itemService.bulkOrdering(orders);
+				bulkOrdering = itemService.bulkOrdering(orders);
+			}
+
+		} catch (Exception e) {
+			logger.info("Orders should not empty");
 		}
-		
-		}catch(Exception e) {
-		logger.info("Orders should not empty");
-		}
-		return new ResponseEntity<List<Order>>(bulkOrdering,HttpStatus.CREATED);
+		return new ResponseEntity<Order>(bulkOrdering, HttpStatus.CREATED);
 	}
 
 }
